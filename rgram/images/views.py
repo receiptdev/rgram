@@ -196,7 +196,7 @@ class ImageDetail(APIView):
             image = models.Image.objects.get(id=image_id, creator=user)
         except models.Image.DoesNotExist:
 
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = serializers.InputImageSerializer(image, data=request.data, partial=True)
 
