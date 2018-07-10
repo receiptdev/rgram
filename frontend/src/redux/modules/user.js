@@ -3,7 +3,9 @@
 // actions
 const SAVE_TOKEN = "SAVE_TOKEN";
 const LOGOUT = "LOGOUT";
-const SET_USET_LIST = "SET_USER_LIST";
+const SET_USER_LIST = "SET_USER_LIST";
+const FOLLOW_USER = "FOLLOW_USER";
+const UNFOLLOW_USER = "UNFOLLOW_USER";
 
 // action creators
 function saveToken(token) {
@@ -21,8 +23,22 @@ function logout() {
 
 function setUserList(userList) {
     return {
-        type: SET_USET_LIST,
+        type: SET_USER_LIST,
         userList
+    };
+}
+
+function setFollowUser(userId) {
+    return {
+        type: FOLLOW_USER,
+        userId
+    };
+}
+
+function setUnfollowUser(userId) {
+    return {
+        type: UNFOLLOW_USER,
+        userId
     };
 }
 
@@ -116,6 +132,71 @@ function getPhotoLikes(photoId) {
     };
 }
 
+function followUser(userId) {
+    return (dispatch, getState) => {
+        dispatch(setFollowUser(userId));
+        const {
+            user: { token }
+        } = getState();
+        fetch(`/users/${userId}/follow/`, {
+            method: "POST",
+            headers: {
+                Authorization: `JWT ${token}`,
+                "Content-Type": "application/json"
+            }
+        }).then(response => {
+            if (response.status === 401) {
+                dispatch(logout());
+            } else if (!response.ok) {
+                dispatch(setUnfollowUser(userId));
+            }
+        });
+    };
+}
+
+function unfollowUser(userId) {
+    return (dispatch, getState) => {
+        dispatch(setUnfollowUser(userId));
+        const {
+            user: { token }
+        } = getState();
+        fetch(`/users/${userId}/unfollow/`, {
+            method: "POST",
+            headers: {
+                Authorization: `JWT ${token}`,
+                "Content-Type": "application/json"
+            }
+        }).then(response => {
+            if (response.status === 401) {
+                dispatch(logout());
+            } else if (!response.ok) {
+                dispatch(setFollowUser(userId));
+            }
+        });
+    };
+}
+
+function getExplore() {
+    return (dispatch, getState) => {
+        const {
+            user: { token }
+        } = getState();
+        fetch(`/users/explore/`, {
+            headers: {
+                Authorization: `JWT ${token}`
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    dispatch(logout());
+                }
+
+                return response.json();
+            })
+            .then(json => dispatch(setUserList(json)));
+    };
+}
+
 // initial state
 const initialState = {
     isLoggedIn: localStorage.getItem("jwt") ? true : false,
@@ -129,8 +210,12 @@ function reducer(state = initialState, action) {
             return applySetToken(state, action);
         case LOGOUT:
             return applyLogout(state, action);
-        case SET_USET_LIST:
+        case SET_USER_LIST:
             return applySetUserList(state, action);
+        case FOLLOW_USER:
+            return applyFollowUser(state, action);
+        case UNFOLLOW_USER:
+            return applyUnFollowUser(state, action);
         default:
             return state;
     }
@@ -162,13 +247,44 @@ function applySetUserList(state, action) {
     };
 }
 
+function applyFollowUser(state, action) {
+    const { userId } = action;
+    const { userList } = state;
+    const updatedUserList = userList.map(user => {
+        if (user.id === userId) {
+            return { ...user, following: true };
+        }
+
+        return user;
+    });
+
+    return { ...state, userList: updatedUserList };
+}
+
+function applyUnFollowUser(state, action) {
+    const { userId } = action;
+    const { userList } = state;
+    const updatedUserList = userList.map(user => {
+        if (user.id === userId) {
+            return { ...user, following: false };
+        }
+
+        return user;
+    });
+
+    return { ...state, userList: updatedUserList };
+}
+
 // exports
 const actionCreators = {
     facebookLogin,
     usernameLogin,
     createAccount,
     logout,
-    getPhotoLikes
+    getPhotoLikes,
+    followUser,
+    unfollowUser,
+    getExplore
 };
 
 export { actionCreators };

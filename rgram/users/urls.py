@@ -4,7 +4,7 @@ from . import views
 app_name = "users_url"
 
 urlpatterns = [
-    path("explore", view=views.ExploreUsers.as_view(), name="explore_users"),
+    path("explore/", view=views.ExploreUsers.as_view(), name="explore_users"),
     path("<int:user_id>/follow/", view=views.FollowUser.as_view(), name="follow_user"),
     path("<int:user_id>/unfollow/", view=views.UnFollowUser.as_view(), name="unfollow_user"),
     path("search/", view=views.Search.as_view(), name="search"),
