@@ -279,6 +279,43 @@ REST_USE_JWT = True
 ACCOUNT_LOGOUT_ON_GET = True
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 CORS_ORIGIN_ALLOW_ALL = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'SCOPE': [
+            'email',
+            'public_profile',
+            'user_friends'
+        ],
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+            'picture'
+        ],
+        'AUTH_PARAMS': {
+            # 'auth_type': 'reauthenticate'
+        },
+        'METHOD': 'oauth2',
+        # 'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': True,
+        'VERSION': 'v2.4'
+    }
+}
 JWT_AUTH = {
     'JWT_VERIFY_EXPIRATION': False
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'rgram.users.serializers.SignUpSerializer'
+}
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'rgram.users.serializers.UserProfileSerializer'
 }
