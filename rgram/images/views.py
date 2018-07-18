@@ -154,12 +154,12 @@ class Search(APIView):
         if hashtags is not None:
             hashtags = hashtags.split(",")
             images = models.Image.objects.filter(tags__name__in=hashtags).distinct()
-            serializer = serializers.CountImageSerializer(images, many=True)
+            serializer = serializers.CountImageSerializer(images, many=True, context={'request': request})
 
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         else:
             images = models.Image.objects.all()[:20]
-            serializer = serializers.CountImageSerializer(images, many=True)
+            serializer = serializers.CountImageSerializer(images, many=True, context={'request': request})
 
             return Response(data=serializer.data, status=status.HTTP_200_OK)
 
