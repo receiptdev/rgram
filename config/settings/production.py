@@ -27,8 +27,7 @@ DATABASES = {
 
 # CACHES
 # ------------------------------------------------------------------------------
-REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL',
-                                      default='redis://127.0.0.1:6379'), 0)
+REDIS_LOCATION = '{0}/{1}'.format(env('REDIS_URL', default='redis://127.0.0.1:6379'), 0)
 
 CACHES = {
     'default': {
