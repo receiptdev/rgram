@@ -6,8 +6,10 @@ from .base import env
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=[
-                         'localhost', 'rgram.ap-northeast-2.elasticbeanstalk.com', 'ad.sunnyworks.co.kr'])
+# ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=[
+#                         'localhost', 'rgram.ap-northeast-2.elasticbeanstalk.com', 'ad.sunnyworks.co.kr'])
+
+ALLOWED_HOSTS = ["*"]
 
 
 # DATABASES
@@ -146,7 +148,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa F405
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL regex.
-ADMIN_URL = env('DJANGO_ADMIN_URL')
+# ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Anymail (Mailgun)
 # ------------------------------------------------------------------------------
