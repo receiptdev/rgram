@@ -30,7 +30,8 @@ urlpatterns = [
     ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
-    re_path(r'^.*/$', views.ReactAppView.as_view())
+    #re_path(r'^.*/$', views.ReactAppView.as_view())
+    url(r'^', views.ReactAppView.as_view()),
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
 )
